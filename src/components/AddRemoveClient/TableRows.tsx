@@ -5,9 +5,12 @@ import { Client } from "../../utils/client/clientTypes";
 function TableRows({ rowsData, deleteTableRows, handleChange }: any) {
   return rowsData.map((data: Client, index: number) => {
     const { name, email, dob, status } = data;
+    const someDate: Date = new Date(dob);
+    const date: number = someDate.setDate(someDate.getDate());
+    const defaultValue: string = new Date(date).toISOString().split("T")[0];
     return (
       <tr key={data.email as string}>
-        <td scope="row" data-label="Name">
+        <td data-label="Name">
           <input
             type="text"
             value={name as string}
@@ -25,18 +28,17 @@ function TableRows({ rowsData, deleteTableRows, handleChange }: any) {
             name="email"
             placeholder="Enter email..."
             className="inputfield"
-          />{" "}
+          />
         </td>
         <td data-label="Date of Birth">
           <input
-            type="text"
-            // defaultValue={dob as string}
-            value={dob as string}
+            type="date"
+            defaultValue={defaultValue}
             placeholder="Enter date of birth..."
             onChange={(evnt) => handleChange(index, evnt)}
             name="dob"
             className="inputfield"
-          />{" "}
+          />
         </td>
         <td data-label="Status">
           <select
@@ -54,7 +56,7 @@ function TableRows({ rowsData, deleteTableRows, handleChange }: any) {
           <Button
             onClick={() => deleteTableRows(index)}
             dangerouslySetInnerHTML={{ __html: "Remove" }}
-            style={{ backgroundColor: "red", color: "white" }}
+            style={{ backgroundColor: "red", width: "50%" }}
           />
         </td>
       </tr>

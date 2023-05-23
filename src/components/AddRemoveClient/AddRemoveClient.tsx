@@ -12,6 +12,9 @@ import { useSelector, useDispatch } from "react-redux";
 export function AddRemoveClient() {
   const dispatch = useDispatch<any>();
   const [rowsData, setRowsData] = useState<any[]>([]);
+  const [sortedList, setSortedList] = useState(false);
+  const [addClientButtonDisabled, setAddClientButtonDisabled] = useState(false);
+  const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
   const [searchedEmail, setSearchedEmail] = useState("");
   const [filteredEmployees, setFilteredEmployees] = useState<any>([]);
 
@@ -22,14 +25,9 @@ export function AddRemoveClient() {
     });
   }, [dispatch]);
 
-  const loading = useSelector(
-    (state: RootState) => state.client.common.loading
+  const success = useSelector(
+    (state: RootState) => state.clientUpdate.common.success
   );
-  //   const error = useSelector((state: RootState) =>   state.client.common.error);
-
-  if (loading) {
-    console.log(loading);
-  }
 
   const searchEmployeeByEmail = (event: any) => {
     let searchedEmail: string = event.target.value;
@@ -58,10 +56,8 @@ export function AddRemoveClient() {
       (client: Client) =>
         client.status.toLowerCase() === selectedStatus.toLowerCase()
     );
-    console.log("foundEmployees", foundEmployee);
     if (foundEmployee.length > 0) {
       setFilteredEmployees(foundEmployee);
-      console.log("rowsData", rowsData);
     } else {
       setFilteredEmployees([]);
       setRowsData([...rowsData]);
@@ -72,9 +68,11 @@ export function AddRemoveClient() {
     const rowsInput: Client = {
       name: "",
       email: "",
-      dob: "",
+      dob: new Date(),
       status: "ACTIVE" || "PENDING" || "BLOCKED",
     };
+    setSaveButtonDisabled(true);
+    setAddClientButtonDisabled(true);
     setRowsData([...rowsData, rowsInput]);
   };
 
@@ -89,15 +87,46 @@ export function AddRemoveClient() {
     console.log(name, value);
     const rowsInput = [...rowsData];
     rowsInput[index][name] = value;
+    console.log("Rows input", rowsInput[index][name]);
     setRowsData(rowsInput);
+    if (
+      (name === "email" &&
+        validateEmail(value) &&
+        rowsInput[index]["name"].value !== "") ||
+      (name === "name" &&
+        value !== "" &&
+        validateEmail(rowsInput[index]["email"]))
+    ) {
+      setAddClientButtonDisabled(false);
+      setSaveButtonDisabled(false);
+    }
   };
 
   const saveButtonClick = () => {
     const updateData = dispatch(updateClient(rowsData));
     updateData.then((response: any) => {
-      // setRowsData(JSON.parse(JSON.stringify(response.payload)));
-      console.log("Data to save", response);
+      setRowsData(JSON.parse(JSON.stringify(response.payload)));
+      // console.log("Data to save", response);
     });
+  };
+
+  const sortButtonClick = () => {
+    let sortedDates: Client[] = JSON.parse(JSON.stringify(rowsData));
+    sortedDates = rowsData.sort(
+      (dateA, dateB) => +new Date(dateA.dob) - +new Date(dateB.dob)
+    );
+    if (sortedList === false) {
+      console.log("Sort");
+      setSortedList(true);
+      setFilteredEmployees(sortedDates);
+    } else {
+      console.log("UnSort");
+      sortedDates = [];
+      setSortedList(false);
+      setFilteredEmployees([]);
+      console.log("Rows data", filteredEmployees);
+      setRowsData([...rowsData]);
+    }
   };
 
   return (
@@ -109,7 +138,7 @@ export function AddRemoveClient() {
           <input
             type="text"
             className="inputfield"
-            style={{ width: "80%" }}
+            style={{ width: "90%" }}
             value={searchedEmail}
             placeholder="Enter email here..."
             onChange={searchEmployeeByEmail}
@@ -121,11 +150,9 @@ export function AddRemoveClient() {
             name="status"
             onChange={filterEmployeesByStatus}
             className="inputfield selectfield"
-            style={{ color: "#888888" }}
+            style={{ color: "#888888", width: "90%" }}
           >
-            <option value="select" selected>
-              Select status
-            </option>
+            <option value="select">Select status</option>
             <option value="Active">ACTIVE</option>
             <option value="Pending">PENDING</option>
             <option value="Blocked">BLOCKED</option>
@@ -136,9 +163,24 @@ export function AddRemoveClient() {
           style={{ paddingBlockStart: "1%" }}
         >
           <Button
+            onClick={sortButtonClick}
+            className={"inputfield"}
+            style={{ backgroundColor: "brown", width: "100%" }}
+            dangerouslySetInnerHTML={{ __html: "Sort by DOB" }}
+          />
+        </div>
+        <div
+          className="search-and-add-inner"
+          style={{ paddingBlockStart: "1%" }}
+        >
+          <Button
             onClick={addTableRows}
             className={"inputfield"}
-            style={{ backgroundColor: "green", color: "white", width: "40%" }}
+            disabled={addClientButtonDisabled}
+            style={{
+              backgroundColor: addClientButtonDisabled ? "darkgrey" : "green",
+              width: "100%",
+            }}
             dangerouslySetInnerHTML={{ __html: "Add Client" }}
           />
         </div>
@@ -167,13 +209,16 @@ export function AddRemoveClient() {
         <Button
           onClick={saveButtonClick}
           className="savebutton"
+          disabled={saveButtonDisabled}
           style={{
             textTransform: "uppercase",
             color: "white",
-            backgroundColor: "midnightblue",
+            backgroundColor: saveButtonDisabled ? "lightgrey" : "midnightblue",
           }}
           dangerouslySetInnerHTML={{ __html: "SAVE CHANGES" }}
         />
+
+        {success && <span>Changes saved successfully!</span>}
       </div>
     </div>
   );

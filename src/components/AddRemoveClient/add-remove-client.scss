@@ -7,13 +7,21 @@
 .search-add-section {
   display: flex;
   flex-direction: row;
-  padding-block: 10px;
+  padding: 20px;
   background-color: beige;
 }
 
 .search-and-add-inner {
   width: 100%;
-  padding-inline-start: 10%;
+  padding-inline-start: 5%;
+}
+
+input,
+select {
+  height: 25px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
 }
 
 table {

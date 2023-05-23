@@ -8,9 +8,12 @@ import clientUpdateSlice from "../slice/clientUpdateSlice";
 export const store = configureStore({
   reducer: {
     client: clientSlice,
-    clientUpdate: clientUpdateSlice
+    clientUpdate: clientUpdateSlice,
   },
-  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(logger)
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }).concat(logger),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

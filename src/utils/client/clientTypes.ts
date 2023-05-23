@@ -1,12 +1,12 @@
-export interface Client{
-    name: String;
-    email: String;
-    dob: String;
-    status: Active | Pending | Blocked;
-};
+export interface Client {
+  name: String;
+  email: String;
+  dob: Date;
+  status: Active | Pending | Blocked;
+}
 
-export type Active='ACTIVE';
+export type Active = "ACTIVE";
 
-export type Pending='PENDING';
+export type Pending = "PENDING";
 
-export type Blocked='BLOCKED';
+export type Blocked = "BLOCKED";

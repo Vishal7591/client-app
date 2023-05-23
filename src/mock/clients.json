@@ -2,19 +2,19 @@
   {
     "name": "Vishal Saxena",
     "email": "vishal.saxena0705@gmail.com",
-    "dob": "07/05/1991",
+    "dob": "1991-05-07T18:30:00.000Z",
     "status": "ACTIVE"
   },
   {
     "name": "Jeffry Roberts",
     "email": "jeff.roberts@gmail.com",
-    "dob": "21/10/1990",
+    "dob": "1990-10-21T18:30:00.000Z",
     "status": "PENDING"
   },
   {
     "name": "Sarah Miller",
     "email": "sarah.miller@gmail.com",
-    "dob": "18/08/1993",
+    "dob": "1993-08-18T18:30:00.000Z",
     "status": "BLOCKED"
   }
 ]
