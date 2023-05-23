@@ -1,11 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import initialState from "./initialState";
+import { initialState } from "./initialState";
 import clients from "../mock/clients.json";
-// import { clients } from "../utils/client/client";
 
 export const fetchClient = createAsyncThunk("client/fetchClient", () => {
-  const data = clients;
-  return data;
+  // const data = clients;
+  localStorage.setItem("clients", JSON.stringify(clients));
+  const clientsData = JSON.parse(
+    JSON.stringify(localStorage.getItem("clients"))
+  );
+  return JSON.parse(clientsData);
 });
 
 export type ThunkDispatch = typeof fetchClient;

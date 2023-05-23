@@ -4,12 +4,12 @@ import { Client } from "../../utils/client/clientTypes";
 
 function TableRows({ rowsData, deleteTableRows, handleChange }: any) {
   return rowsData.map((data: Client, index: number) => {
-    const { name, email, dob, status } = data;
+    const { name, useremail, dob, status } = data;
     const someDate: Date = new Date(dob);
     const date: number = someDate.setDate(someDate.getDate());
     const defaultValue: string = new Date(date).toISOString().split("T")[0];
     return (
-      <tr key={data.email as string}>
+      <tr key={data.id as string}>
         <td data-label="Name">
           <input
             type="text"
@@ -23,9 +23,9 @@ function TableRows({ rowsData, deleteTableRows, handleChange }: any) {
         <td data-label="Email">
           <input
             type="text"
-            value={email as string}
+            value={useremail as string}
             onChange={(evnt) => handleChange(index, evnt)}
-            name="email"
+            name="useremail"
             placeholder="Enter email..."
             className="inputfield"
           />

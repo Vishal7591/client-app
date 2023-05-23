@@ -1,6 +1,7 @@
 export interface Client {
-  name: String;
-  email: String;
+  id: string;
+  name: string;
+  useremail: string;
   dob: Date;
   status: Active | Pending | Blocked;
 }

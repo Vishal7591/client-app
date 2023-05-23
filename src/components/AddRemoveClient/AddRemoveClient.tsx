@@ -8,11 +8,13 @@ import type { RootState } from "../../store/configureStore";
 import { fetchClient } from "../../slice/clientSlice";
 import { updateClient } from "../../slice/clientUpdateSlice";
 import { useSelector, useDispatch } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
 
 export function AddRemoveClient() {
   const dispatch = useDispatch<any>();
   const [rowsData, setRowsData] = useState<any[]>([]);
   const [sortedList, setSortedList] = useState(false);
+  const [saveMessageVisibility, setSaveMessageVisibility] = useState(false);
   const [addClientButtonDisabled, setAddClientButtonDisabled] = useState(false);
   const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
   const [searchedEmail, setSearchedEmail] = useState("");
@@ -25,15 +27,30 @@ export function AddRemoveClient() {
     });
   }, [dispatch]);
 
+  useEffect(() => {
+    const containEmptyFields = (element: Client) =>
+      element.useremail === "" || element.name === "";
+    setSaveMessageVisibility(false);
+    const containsValidEmail = (client: Client) =>
+      validateEmail(client.useremail);
+    setSaveButtonDisabled(
+      !rowsData.every(containsValidEmail) || rowsData.some(containEmptyFields)
+    );
+    setAddClientButtonDisabled(
+      !rowsData.every(containsValidEmail) || rowsData.some(containEmptyFields)
+    );
+  }, [rowsData]);
+
   const success = useSelector(
     (state: RootState) => state.clientUpdate.common.success
   );
 
   const searchEmployeeByEmail = (event: any) => {
     let searchedEmail: string = event.target.value;
+    console.log(validateEmail(searchedEmail));
     if (validateEmail(searchedEmail)) {
       const foundEmail: Client = rowsData.find(
-        (client: Client) => client.email === searchedEmail
+        (client: Client) => client.useremail === searchedEmail
       );
       if (foundEmail !== undefined) {
         setSearchedEmail(searchedEmail);
@@ -66,8 +83,9 @@ export function AddRemoveClient() {
 
   const addTableRows = () => {
     const rowsInput: Client = {
+      id: uuidv4(),
       name: "",
-      email: "",
+      useremail: "",
       dob: new Date(),
       status: "ACTIVE" || "PENDING" || "BLOCKED",
     };
@@ -84,18 +102,16 @@ export function AddRemoveClient() {
 
   const handleChange = (index: number, evnt: any) => {
     const { name, value } = evnt.target;
-    console.log(name, value);
     const rowsInput = [...rowsData];
     rowsInput[index][name] = value;
-    console.log("Rows input", rowsInput[index][name]);
     setRowsData(rowsInput);
     if (
-      (name === "email" &&
+      (name === "useremail" &&
         validateEmail(value) &&
         rowsInput[index]["name"].value !== "") ||
       (name === "name" &&
         value !== "" &&
-        validateEmail(rowsInput[index]["email"]))
+        validateEmail(rowsInput[index]["useremail"]))
     ) {
       setAddClientButtonDisabled(false);
       setSaveButtonDisabled(false);
@@ -106,25 +122,19 @@ export function AddRemoveClient() {
     const updateData = dispatch(updateClient(rowsData));
     updateData.then((response: any) => {
       setRowsData(JSON.parse(JSON.stringify(response.payload)));
-      // console.log("Data to save", response);
+      setSaveMessageVisibility(true);
     });
   };
 
   const sortButtonClick = () => {
-    let sortedDates: Client[] = JSON.parse(JSON.stringify(rowsData));
-    sortedDates = rowsData.sort(
-      (dateA, dateB) => +new Date(dateA.dob) - +new Date(dateB.dob)
-    );
+    let tempList: Client[] = [...rowsData];
+    tempList.sort((obj1, obj2) => (obj1.name > obj2.name ? 1 : -1));
     if (sortedList === false) {
-      console.log("Sort");
       setSortedList(true);
-      setFilteredEmployees(sortedDates);
+      setFilteredEmployees(tempList);
     } else {
-      console.log("UnSort");
-      sortedDates = [];
       setSortedList(false);
       setFilteredEmployees([]);
-      console.log("Rows data", filteredEmployees);
       setRowsData([...rowsData]);
     }
   };
@@ -166,7 +176,7 @@ export function AddRemoveClient() {
             onClick={sortButtonClick}
             className={"inputfield"}
             style={{ backgroundColor: "brown", width: "100%" }}
-            dangerouslySetInnerHTML={{ __html: "Sort by DOB" }}
+            dangerouslySetInnerHTML={{ __html: "Sort by Name" }}
           />
         </div>
         <div
@@ -218,7 +228,9 @@ export function AddRemoveClient() {
           dangerouslySetInnerHTML={{ __html: "SAVE CHANGES" }}
         />
 
-        {success && <span>Changes saved successfully!</span>}
+        {saveMessageVisibility && (
+          <span style={{ color: "red" }}>Changes saved successfully!</span>
+        )}
       </div>
     </div>
   );
