@@ -45,7 +45,7 @@ export const AddRemoveClient: React.FunctionComponent=()=> {
     (state: RootState) => state.clientUpdate.common.success
   );
 
-  const searchEmployeeByEmail = (event: any) => {
+  const searchEmployeeByEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     let searchedEmail: string = event.target.value;
     if (validateEmail(searchedEmail)) {
       const foundEmail = rowsData.find(
@@ -93,7 +93,7 @@ export const AddRemoveClient: React.FunctionComponent=()=> {
     setRowsData([...rowsData, rowsInput]);
   };
 
-  const deleteTableRows = (index: any) => {
+  const deleteTableRows = (index: number) => {
     const rows = [...rowsData];
     rows.splice(index, 1);
     setRowsData(rows);
