@@ -1,6 +1,6 @@
-import { Button } from "./../Button";
-import { Input } from "./../Input";
-import "./add-remove-client.scss";
+import { Button } from "../Button";
+import { Input } from "../Input";
+import "./table-rows.module.scss";
 import React from "react";
 import { Client, TableRowProps } from "../../types/client/clientTypes";
 
@@ -22,7 +22,9 @@ const TableRows: React.FunctionComponent<TableRowProps> = ({
               <Input
                 type="text"
                 value={name as string}
-                onChange={(evnt: any) => handleChange(index, evnt)}
+                onChange={(evnt: React.ChangeEvent<HTMLInputElement>) =>
+                  handleChange(index, evnt)
+                }
                 name="name"
                 placeholder="Enter name..."
                 className="inputfield"
@@ -32,7 +34,9 @@ const TableRows: React.FunctionComponent<TableRowProps> = ({
               <Input
                 type="text"
                 value={useremail as string}
-                onChange={(evnt: any) => handleChange(index, evnt)}
+                onChange={(evnt: React.ChangeEvent<HTMLInputElement>) =>
+                  handleChange(index, evnt)
+                }
                 name="useremail"
                 placeholder="Enter email..."
                 className="inputfield"
@@ -41,10 +45,14 @@ const TableRows: React.FunctionComponent<TableRowProps> = ({
             <td data-label="Date of Birth">
               <Input
                 type="date"
-                defaultValue={defaultValue}
+                value={defaultValue}
                 placeholder="Enter date of birth..."
-                onChange={(evnt: any) => handleChange(index, evnt)}
-                onKeyDown={(e: any) => e.preventDefault()}
+                onChange={(evnt: React.ChangeEvent<HTMLInputElement>) =>
+                  handleChange(index, evnt)
+                }
+                onKeyDown={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  e.preventDefault()
+                }
                 name="dob"
                 className="inputfield"
               />
@@ -52,7 +60,9 @@ const TableRows: React.FunctionComponent<TableRowProps> = ({
             <td data-label="Status">
               <select
                 name="status"
-                onChange={evnt => handleChange(index, evnt)}
+                onChange={(evnt: React.ChangeEvent<HTMLSelectElement>) =>
+                  handleChange(index, evnt)
+                }
                 className="selectfield"
                 defaultValue={status}
               >

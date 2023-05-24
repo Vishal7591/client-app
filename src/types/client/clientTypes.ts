@@ -17,3 +17,15 @@ export interface TableRowProps {
   deleteTableRows: Function;
   handleChange: Function;
 }
+
+// export interface Clients extends Array<Client> {}
+
+export interface Clients {
+  [index: number]: {
+    id: string;
+    name: string;
+    useremail: string;
+    dob: Date;
+    status: Active | Pending | Blocked;
+  }[];
+}

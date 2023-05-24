@@ -1,5 +1,5 @@
 import React,{ useState, useEffect } from "react";
-import TableRows from "./TableRows";
+import TableRows from "../TableRows/TableRows";
 import "./add-remove-client.scss";
 import { Button } from "./../Button";
 import { validateEmail } from "../../utils/helper";
@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export const AddRemoveClient: React.FunctionComponent=()=> {
   const dispatch = useDispatch<any>();
-  const [rowsData, setRowsData] = useState<any>([]);
+  const [rowsData, setRowsData] = useState<any[]>([]);
   const [sortedList, setSortedList] = useState<boolean>(false);
   const [saveMessageVisibility, setSaveMessageVisibility] = useState<boolean>(false);
   const [addClientButtonDisabled, setAddClientButtonDisabled] = useState<boolean>(false);
@@ -66,7 +66,7 @@ export const AddRemoveClient: React.FunctionComponent=()=> {
     }
   };
 
-  const filterEmployeesByStatus = (event: any) => {
+  const filterEmployeesByStatus = (event: React.ChangeEvent<HTMLSelectElement>) => {
     let selectedStatus: string = event.target.value;
     const foundEmployee = rowsData.filter(
       (client: Client) =>
@@ -99,7 +99,7 @@ export const AddRemoveClient: React.FunctionComponent=()=> {
     setRowsData(rows);
   };
 
-  const handleChange = (index: number, evnt: any) => {
+  const handleChange = (index: number, evnt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = evnt.target;
     const rowsInput = [...rowsData];
     rowsInput[index][name] = name==="dob"? new Date(value): value;
