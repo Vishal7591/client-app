@@ -9,6 +9,7 @@ type ButtonProps<T extends React.ElementType> = PolymorphicComponentProps<
   T,
   {
     disabled?: boolean;
+    className?: string;
   }
 >;
 

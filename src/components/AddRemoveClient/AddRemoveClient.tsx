@@ -1,22 +1,22 @@
-import { useState, useEffect } from "react";
+import React,{ useState, useEffect } from "react";
 import TableRows from "./TableRows";
 import "./add-remove-client.scss";
 import { Button } from "./../Button";
 import { validateEmail } from "../../utils/helper";
-import { Client } from "../../utils/client/clientTypes";
+import { Client } from "../../types/client/clientTypes";
 import type { RootState } from "../../store/configureStore";
 import { fetchClient } from "../../slice/clientSlice";
 import { updateClient } from "../../slice/clientUpdateSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
-export function AddRemoveClient() {
+export const AddRemoveClient: React.FunctionComponent=()=> {
   const dispatch = useDispatch<any>();
-  const [rowsData, setRowsData] = useState<any[]>([]);
-  const [sortedList, setSortedList] = useState(false);
-  const [saveMessageVisibility, setSaveMessageVisibility] = useState(false);
-  const [addClientButtonDisabled, setAddClientButtonDisabled] = useState(false);
-  const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
+  const [rowsData, setRowsData] = useState<any>([]);
+  const [sortedList, setSortedList] = useState<boolean>(false);
+  const [saveMessageVisibility, setSaveMessageVisibility] = useState<boolean>(false);
+  const [addClientButtonDisabled, setAddClientButtonDisabled] = useState<boolean>(false);
+  const [saveButtonDisabled, setSaveButtonDisabled] = useState<boolean>(false);
   const [searchedEmail, setSearchedEmail] = useState("");
   const [filteredEmployees, setFilteredEmployees] = useState<any>([]);
 
@@ -47,9 +47,8 @@ export function AddRemoveClient() {
 
   const searchEmployeeByEmail = (event: any) => {
     let searchedEmail: string = event.target.value;
-    console.log(validateEmail(searchedEmail));
     if (validateEmail(searchedEmail)) {
-      const foundEmail: Client = rowsData.find(
+      const foundEmail = rowsData.find(
         (client: Client) => client.useremail === searchedEmail
       );
       if (foundEmail !== undefined) {
@@ -69,7 +68,7 @@ export function AddRemoveClient() {
 
   const filterEmployeesByStatus = (event: any) => {
     let selectedStatus: string = event.target.value;
-    const foundEmployee: Client[] = rowsData.filter(
+    const foundEmployee = rowsData.filter(
       (client: Client) =>
         client.status.toLowerCase() === selectedStatus.toLowerCase()
     );
@@ -103,7 +102,7 @@ export function AddRemoveClient() {
   const handleChange = (index: number, evnt: any) => {
     const { name, value } = evnt.target;
     const rowsInput = [...rowsData];
-    rowsInput[index][name] = value;
+    rowsInput[index][name] = name==="dob"? new Date(value): value;
     setRowsData(rowsInput);
     if (
       (name === "useremail" &&
